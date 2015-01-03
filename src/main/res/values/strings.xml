@@ -19,10 +19,10 @@
     <string name="signing_in">Signing in with Google</string>
     <string name="signing_out">Signing out</string>
     <string name="app_name">Button Clicker</string>
-    <string name="game_title">Button Clicker 2000!</string>
-    <string name="game_blurb">A sample game that tests your ability to click a button. Can you click faster than your friends? Only one way to find out! To play this game with friends, you must sign in with Google.</string>
+    <string name="game_title">Fun Finger Paint !</string>
+    <string name="game_blurb">A game played best multiplayer ! To play this game with friends, you must sign in with Google.</string>
     <string name="single_player">Single Player</string>
-    <string name="single_player_explanation">Get some practice!</string>
+    <string name="single_player_explanation">Play alone</string>
     <string name="quick_game">Quick game</string>
     <string name="invite_players">Invite friends</string>
     <string name="see_invitations">See invitations</string>

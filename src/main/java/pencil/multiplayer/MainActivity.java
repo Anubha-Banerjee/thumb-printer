@@ -363,6 +363,7 @@ public class MainActivity extends Activity
     public void onStart() {
         switchToScreen(R.id.screen_wait);
         if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
+        	switchToScreen(R.id.screen_main);
           Log.w(TAG,
               "GameHelper: client was already connected on onStart()");
         } else {
@@ -376,7 +377,7 @@ public class MainActivity extends Activity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent e) {
         if (keyCode == KeyEvent.KEYCODE_BACK && mCurScreen == R.id.screen_game) {
-            leaveRoom();
+            leaveRoom();            
             return true;
         }
         return super.onKeyDown(keyCode, e);
@@ -388,8 +389,7 @@ public class MainActivity extends Activity
         mSecondsLeft = 0;
         stopKeepingScreenOn();
         if (mRoomId != null) {
-            Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
-            Log.d("aaaaaaaaaaaaaaaaaaa" , "aaaaaaaa" + mRoomId);
+            Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);            
             mRoomId = null;
             switchToScreen(R.id.screen_wait);
         } else {
@@ -494,7 +494,6 @@ public class MainActivity extends Activity
 
         // get room ID, participants and my ID:
         mRoomId = room.getRoomId();
-        Log.d("bbbbbbbbbbbbb" , "bbbbbbb" + mRoomId);
         mParticipants = room.getParticipants();
         mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mGoogleApiClient));
 
@@ -621,9 +620,6 @@ public class MainActivity extends Activity
         if (room != null) {
             mParticipants = room.getParticipants();
         }
-        if (mParticipants != null) {
-            updatePeerScoresDisplay();
-        }
     }
 
     /*
@@ -646,7 +642,7 @@ public class MainActivity extends Activity
     // Start the gameplay phase of the game.
     void startGame(boolean multiplayer) {
         mMultiplayer = multiplayer;            
-        //switchToScreen(R.id.screen_game);
+        switchToScreen(R.id.screen_game);
         this.startActivity(new Intent(this, GameActivity.class));        
     }
 
@@ -726,7 +722,7 @@ public class MainActivity extends Activity
     final static int[] CLICKABLES = {
             R.id.button_accept_popup_invitation, R.id.button_invite_players,
             R.id.button_quick_game, R.id.button_see_invitations, R.id.button_sign_in,
-            R.id.button_sign_out, R.id.button_click_me, R.id.button_single_player,
+            R.id.button_sign_out, R.id.button_single_player,
             R.id.button_single_player_2
     };
 
@@ -768,10 +764,6 @@ public class MainActivity extends Activity
         }
     }
 
-    // updates the label that shows my score
-    void updateScoreDisplay() {
-        ((TextView) findViewById(R.id.my_score)).setText(formatScore(mScore));
-    }
 
     // formats a score as a three-digit number
     String formatScore(int i) {
@@ -779,33 +771,6 @@ public class MainActivity extends Activity
             i = 0;
         String s = String.valueOf(i);
         return s.length() == 1 ? "00" + s : s.length() == 2 ? "0" + s : s;
-    }
-
-    // updates the screen with the scores from our peers
-    void updatePeerScoresDisplay() {
-        ((TextView) findViewById(R.id.score0)).setText(formatScore(mScore) + " - Me");
-        int[] arr = {
-                R.id.score1, R.id.score2, R.id.score3
-        };
-        int i = 0;
-
-        if (mRoomId != null) {
-            for (Participant p : mParticipants) {
-                String pid = p.getParticipantId();
-                if (pid.equals(mMyId))
-                    continue;
-                if (p.getStatus() != Participant.STATUS_JOINED)
-                    continue;
-                int score = mParticipantScore.containsKey(pid) ? mParticipantScore.get(pid) : 0;
-                ((TextView) findViewById(arr[i])).setText(formatScore(score) + " - " +
-                        p.getDisplayName());
-                ++i;
-            }
-        }
-
-        for (; i < arr.length; ++i) {
-            ((TextView) findViewById(arr[i])).setText("");
-        }
     }
 
     /*

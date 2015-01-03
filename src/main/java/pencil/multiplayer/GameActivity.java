@@ -22,6 +22,9 @@ import org.andengine.ui.activity.SimpleBaseGameActivity;
 import org.andengine.util.adt.io.in.IInputStreamOpener;
 import org.andengine.util.debug.Debug;
 
+import android.content.Intent;
+import android.view.KeyEvent;
+
 
 /**
  * (c) 2010 Nicolas Gramlich
@@ -35,8 +38,9 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	// Constants
 	// ===========================================================
 
-	private static final int CAMERA_WIDTH = 720;
-	private static final int CAMERA_HEIGHT = 480;
+	private static final int CAMERA_WIDTH = 540;
+	private static final int CAMERA_HEIGHT = 960;
+	
 	private static float finger_touchX = 0;
 	private static float finger_touchY = 0;
 	private static Scene scene;
@@ -65,7 +69,7 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 	public EngineOptions onCreateEngineOptions() {
 		final Camera camera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
 
-		return new EngineOptions(true, ScreenOrientation.LANDSCAPE_SENSOR, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
+		return new EngineOptions(true, ScreenOrientation.PORTRAIT_FIXED, new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), camera);
 	}
 
 	@Override
@@ -121,5 +125,15 @@ public class GameActivity extends SimpleBaseGameActivity implements IOnSceneTouc
 			return true;
 		}
 		return false;
-	}	// ===========================================================
+	}
+	
+	//@Override
+/*    public boolean onKeyDown(int keyCode, KeyEvent e) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	finish();
+        	this.startActivity(new Intent(this, MainActivity.class)); 
+            return true;
+        }
+        return super.onKeyDown(keyCode, e);
+    }*/
 }
