@@ -83,6 +83,7 @@ public class MainActivity extends Activity
      */
 
     final static String TAG = "ButtonClicker2000";
+    public static boolean isLeftPlayer = true;
 
     // Request codes for the UIs that we show with startActivityForResult:
     final static int RC_SELECT_PLAYERS = 10000;
@@ -497,6 +498,16 @@ public class MainActivity extends Activity
         mParticipants = room.getParticipants();
         mMyId = room.getParticipantId(Games.Players.getCurrentPlayerId(mGoogleApiClient));
 
+        for (int i = 0; i < mParticipants.size(); i++) {
+            if (mParticipants.get(i).getParticipantId().equals(mMyId)) {
+                if(i % 2 == 0) {
+                	isLeftPlayer = true;
+                }
+                else {
+                	isLeftPlayer = false;
+                }
+            }
+        }
         // print out the list of participants (for debug purposes)
         Log.d(TAG, "Room ID: " + mRoomId);
         Log.d(TAG, "My ID " + mMyId);
@@ -528,6 +539,8 @@ public class MainActivity extends Activity
     // Called when room has been created
     @Override
     public void onRoomCreated(int statusCode, Room room) {
+    	GameActivity.scoreCount = 0;
+    	GameActivity.opponentScoreCount = 0;
         Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
@@ -673,7 +686,7 @@ public class MainActivity extends Activity
         float[] floatArray = toFloatArray(buf);
         float opponentX = floatArray[0];
         float opponentY = floatArray[1];
-        GameActivity.opponentTouchEvent(opponentX, opponentY);        
+        GameActivity.opponentEvent(opponentX, opponentY);        
     }
 	private static float[] toFloatArray(byte[] bytes) {
 		float floatArray[] = new float[bytes.length/4];
@@ -690,7 +703,7 @@ public class MainActivity extends Activity
 		return byteArray;  
 	}
     // Broadcast my score to everybody else.
-    public static void broadcastPrint(float x, float y) {
+    public static void broadcastBall(float x, float y) {
         if (!mMultiplayer)
             return; // playing single-player mode
         
@@ -707,12 +720,12 @@ public class MainActivity extends Activity
                 continue;
             Log.d("ROOOOM ID", "aa " + mRoomId);
             // final score notification must be sent via reliable message
-            Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
+            Games.RealTimeMultiplayer.sendUnreliableMessage
+            (mGoogleApiClient, mMsgBuf,
                     mRoomId, p.getParticipantId());
             
         }        
-    }
-
+    } 
     /*
      * UI SECTION. Methods that implement the game's UI.
      */
